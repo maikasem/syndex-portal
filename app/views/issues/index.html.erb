@@ -23,7 +23,7 @@
           </tbody>
           </table>
           <div class="cell">
-            <%= link_to 'Apply', '', class: 'button hollow expanded black' %>
+            <%= link_to 'Apply', {:action => 'show', :issue_id => issue.id}, class: 'button hollow expanded black' %>
           </div>
         </div>
       </div>

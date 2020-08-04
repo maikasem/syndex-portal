@@ -1,0 +1,52 @@
+<div class="card portfolio-issue-card">
+  <div class="portfolio-issue-card-header card-bg-image-center grid-y">
+    <div class="card-section grid-y align-right portfolio-issue-card-header-cover">
+      <h2 class="h3"><%= @issue.name -%></h2>
+    </div>
+  </div>
+  <div class="card-section grid-y grid-margin-y align-spaced">
+    <table class="cell info-list-table">
+    <tbody>
+      <tr>
+        <td>Minimum Quantity</td>
+        <td><%= number_with_precision @issue.minimum_quantity, precision: 0 %> Shares</td>
+      </tr>
+      <tr>
+        <td>Price per share</td>
+        <td><%= number_to_currency @issue.price %></td>
+      </tr>
+    </tbody>
+    </table>
+  </div>
+</div>
+<h1 class="h3">Your accounts</h1>
+<div class="grid-x grid-margin-x">
+  <div class="cell small-4">Account Name</div>
+  <div class="cell small-4">Applying Status</div>
+  <div class="cell small-4">Action</div>
+  <br/><br/>
+  <% @accounts.each do |account| %>
+    <div class="cell small-4"><%=account.name%></div>
+    <% if !account.verified? %>
+      <div class="cell small-4">Account Not Verified</div>
+      <div class="cell small-4">
+        <%= link_to 'Edit Account', edit_account_path(account), class: 'button hollow black' %>
+      </div>
+    <%elsif IssueApplications.where("account_id = ? AND issue_id = ?", account.id, @issue.id).length > 0%>
+      <div class="cell small-4">Already Applied</div>
+      <div class="cell small-4">
+        <%= link_to 'Apply', '#', class: 'button hollow black disabled' %>
+      </div>
+    <%else%>
+      <div class="cell small-4">Available</div>
+      <div class="cell small-4">
+        <%= form_for IssueApplications.new, :url => { :action => "create" } do |f| %>
+          <%= f.hidden_field :account_id, :value => account.id.to_i %>
+          <%= f.hidden_field :issue_id, :value => @issue.id.to_i %>
+          <%= f.submit "Apply", class: 'button hollow black' %>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+</div>
+
